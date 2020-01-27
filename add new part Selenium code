@@ -1,0 +1,4 @@
+(JavascriptExecutor)driver).executeScript("window.open()");
+ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+driver.switchTo().window(tabs.get(1));
+driver.get("chrome-extension://aejoelaoggembcahagimdiliamlcdmfm/restlet_client.html");
