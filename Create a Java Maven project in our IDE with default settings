@@ -1,0 +1,30 @@
+package com.test;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+
+public class Selenium {
+
+   public static void main(String[] args) {
+  System.setProperty("webdriver.chrome.driver","F:\\Jenkins\\workspace\\chromedriver.exe"); // <-- Change this path
+       WebDriver driver = null;
+       driver = new ChromeDriver();
+       String baseUrl = "https://experitest.com/";
+       WebDriverWait wait = new WebDriverWait(driver, 20);
+       String expectedTitle = "experitest.com";
+       String actualTitle = "";
+       driver.get(baseUrl);
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/div/div/div[3]/ul/li[2]/a"))).click();
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div/div/div[2]/div[2]/div/p/a"))).click();
+       actualTitle = driver.getTitle();
+       if (actualTitle.contentEquals(expectedTitle)){
+           System.out.println("TEST PASSED!");
+       } else {
+           System.out.println("TEST FAILED");
+       }
+       driver.close();
+       }
+   }
