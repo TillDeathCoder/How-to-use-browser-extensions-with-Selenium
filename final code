@@ -1,0 +1,83 @@
+package com.test;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.io.File;
+import java.util.ArrayList;
+
+
+public class Selenium {
+
+   private static void uploadFile(WebElement fileupload) {
+       try {
+           File file = new File("F:\\Experitest\\ChromeExtensions\\ChromeExtensions\\scenarions_for_REST_API\\REST_API_Experitest.json"); // <-- Don't forger to change this string
+           fileupload.sendKeys(file.getAbsolutePath());
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+   }
+
+   public static void main(String[] args) {
+       System.setProperty("webdriver.chrome.driver","F:\\Jenkins\\workspace\\chromedriver.exe"); // <-- Don't forger to change this string
+       WebDriver driver = null;
+       ChromeOptions chromeOptions = new ChromeOptions();
+       chromeOptions.addExtensions(new File("F:\\Experitest\\ChromeExtensions\\ChromeExtensions\\extensions\\Restlet-Client-REST-API-Testing_v2.19.1.crx")); // <-- Don't forger to change this string
+       DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
+       desiredCapabilities.setCapability(ChromeOptions.CAPABILITY,chromeOptions);
+       driver = new ChromeDriver(desiredCapabilities);
+       WebDriverWait wait = new WebDriverWait(driver, 20);
+       String baseUrl = "https://experitest.com/";
+       String expectedTitle = "experitest.com";
+       String actualTitle = "";
+       driver.get(baseUrl);
+       wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/div/div/div[3]/ul/li[2]/a"))).click();
+       wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div/div/div[2]/div[2]/div/p/a"))).click();
+       actualTitle = driver.getTitle();
+       if (actualTitle.contentEquals(expectedTitle)){
+           System.out.println("1st PART IS PASSED!");
+       } else {
+           System.out.println("TEST FAILED");
+       }
+       String Email = "****************"; // <-- Don't forget to change this string
+       String Password = "**************"; // <-- Don't forget to change this string       wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"email\"]"))).sendKeys(Email);
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"password\"]"))).sendKeys(Password);
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div/div/div[2]/div[3]/div/form/div[3]/button"))).click();
+       ((JavascriptExecutor)driver).executeScript("window.open()");
+       ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+       driver.switchTo().window(tabs.get(1));
+       driver.get("chrome-extension://aejoelaoggembcahagimdiliamlcdmfm/restlet_client.html");
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[3]/div[2]/div/div/p[2]/button"))).click();
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[2]/section/div[3]/div[1]/a[2]"))).click();
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[2]/section/div[3]/div[1]/ul/li[5]/a"))).click();
+       WebElement element = driver.findElement(By.xpath("//*[@id='gwt-uid-607']"));
+       uploadFile(element);
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"gwt-uid-608\"]"))).click();
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"console\"]/div[7]/div[3]/button[2]"))).click();
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"left-side\"]/div[2]/section/div[2]/div[1]/ul/li/div/i"))).click(); wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"left-side\"]/div[2]/section/div[2]/div[1]/ul/li/ul/li/div/i"))).click(); wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"left-side\"]/div[2]/section/div[2]/div[1]/ul/li/ul/li/div/span"))).click(); wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"console\"]/div[4]/div[4]/div/div[1]/div/div/div[2]/div[3]/button[2]"))).click();
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"console\"]/div[4]/div[4]/div[1]/div/div[2]/div[1]/div[1]"))).click();
+       String testStatus = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"console\"]/div[4]/div[4]/div[1]/div/div[3]/div/dl[2]/div[2]/dd"))).getText();
+
+       while (testStatus.equals("In progress")) {
+           testStatus = driver.findElement(By.xpath("//*[@id=\"console\"]/div[4]/div[4]/div[1]/div/div[3]/div/dl[2]/div[2]/dd")).getText();
+       }
+       if (testStatus.equals("Success")){ wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"console\"]/div[4]/div[4]/div[1]/div/div[2]/div[1]/div[2]")));
+           //Since, no exception, so element is present
+           System.out.println("2nd PART IS PASSED!");
+           driver.close();
+           driver.switchTo().window(tabs.get(0));
+           driver.close();
+           System.out.println("-------------");
+           System.out.println("TEST PASSED!");
+       }
+       else{
+           //Element is not present
+           System.out.println("TEST FAILED!");
+           System.out.println(testStatus);
+       }
+   }
+}
